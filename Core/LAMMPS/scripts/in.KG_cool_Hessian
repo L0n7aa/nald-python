@@ -1,0 +1,65 @@
+###############################################
+# LAMMPS script for a polymer
+###############################################
+#Difine Variables
+variable        id index 0 
+variable        N_atoms index 100
+variable        N_molecules index 100
+#clear
+
+variable        T index 1.0
+variable        random equal random(10000000,99999999,58545769)
+variable        seed equal round(v_random)
+
+
+units           lj          # use lennard-jones (i.e. dimensionless) units
+atom_style      bond       # atoms with bonds and angles
+dimension       3
+boundary        p p p       # all boundaries are periodic
+
+read_data       ${dir_name}/end.data    # use the cooled configuration 
+
+mass            *  1.0
+set atom 	* type 1
+
+
+#angle_style     cosine
+#angle_coeff     1  0.0
+
+bond_style      fene
+special_bonds   fene
+bond_coeff      1    30.0   1.5   1.0   1.0
+
+pair_style      lj/cut 2.5
+pair_modify     shift yes
+pair_coeff      * * 1.0 1.0 2.5
+
+neighbor        0.5 bin
+neigh_modify    every 10 delay 0 check no
+
+thermo          1000
+thermo_style    custom  step  temp etotal pe ke press density
+
+timestep        0.001
+
+# Control the pressure and langevin thermostat
+fix             NPH all nph iso 0.0 0.0 1
+fix             Langevin all langevin ${T} ${T} 1.0 ${seed}
+fix             Recenter all recenter INIT INIT INIT
+run             10000
+
+unfix		NPH
+unfix		Langevin
+
+dynamical_matrix all regular 0.000001 file ${dir_name}/Hessian.dat 
+run		0
+
+
+
+
+
+write_data      ${dir_name}/end_Hessian.data   nocoeff
+
+#next            a
+#jump            in.KG_cool_Hessian
+

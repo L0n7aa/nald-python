@@ -1,0 +1,66 @@
+###############################################
+
+###############################################
+#Define Variables
+variable id index 0
+clear
+variable T index 1.0
+variable        N_atoms index 100
+variable        N_molecules index 100
+variable real_t index (step0.005)
+variable V equal vol
+units lj # use lennard-jones (i.e. dimensionless) units
+atom_style bond # atoms with bonds and angles
+dimension 3
+boundary p p p # all boundaries are periodic
+#read_data ../../../Data/run_${id}_${T}_${N_atoms}_${N_molecules}/end_cool_T${T}.data 
+read_data ${dir_name}/end_Hessian.data
+
+mass * 1.0
+set atom * type 1
+
+#angle_style cosine
+#angle_coeff 1 0.0
+bond_style fene
+special_bonds fene
+bond_coeff 1 30.0 1.5 1.0 1.0
+pair_style lj/cut 2.5
+pair_modify shift yes
+pair_coeff * * 1.0 1.0 2.5
+neighbor 0.5 bin
+neigh_modify every 10 delay 0 check no
+thermo 5000
+thermo_style custom step temp etotal pe ke press density
+timestep 0.005
+
+variable delta equal 1e-6
+
+
+print "${V}" file ${dir_name}/volume.dat screen no
+run 0
+change_box all triclinic
+#kspace_style pppm 1e-5
+####################################################################
+
+
+change_box all xz delta 0.0 remap units box
+run 0
+fix prevState all store/state 0 fx fy fz
+
+
+variable ddXZ equal ${delta}*lz
+change_box all xz delta ${ddXZ} remap units box
+run 0
+fix currState all store/state 0 fx fy fz
+
+
+variable affineForceX atom (f_prevState[1]-f_currState[1])/${delta}
+variable affineForceY atom (f_prevState[2]-f_currState[2])/${delta}
+variable affineForceZ atom (f_prevState[3]-f_currState[3])/${delta}
+write_dump all custom ${dir_name}/AF.dat mass v_affineForceX v_affineForceY v_affineForceZ modify sort id format line "%.15g %.15g %.15g %.15g"
+unfix currState
+unfix prevState
+
+write_data ${dir_name}/end_affine.data nocoeff
+#next a
+#jump in.KG_cool_affine
