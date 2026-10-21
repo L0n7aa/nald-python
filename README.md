@@ -20,13 +20,18 @@ Ensure you have Python 3.8+ installed along with the required libraries.
    cd nald-python
    ```
 
-2. **(Optional) Create and activate a virtual environment:**
+2. **Create your data storage directory:**
+   ```bash
+   mkdir Data
+   ```
+
+3. **(Optional) Create and activate a virtual environment:**
    ```bash
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies:**
+4. **Install dependencies:**
    ```bash
    cd Core
    pip install -r requirements.txt
