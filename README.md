@@ -16,7 +16,7 @@ Ensure you have Python 3.8+ installed along with the required libraries.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/nald-python.git
+   git clone https://github.com/L0n7aa/nald-python.git
    cd nald-python
    ```
 
