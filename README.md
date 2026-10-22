@@ -62,7 +62,7 @@ python3 nald.py -M <molecules> -N <atoms> -T <temperature>
 ### Example
 
 ```bash
-python3 nald.py -M 50 -N 50 -T 0.5
+python3 nald.py -M 50 -A 50 -T 0.5
 ```
 
 During execution, the script may prompt you interactively to regenerate or adjust the generated system before proceeding with downstream calculations.
