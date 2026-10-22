@@ -1,0 +1,65 @@
+###############################################
+# LAMMPS script for a polymer
+###############################################
+#Difine Variables
+#variable        a index  0 1 2 3 4 5 6 7 8 9
+#clear
+variable        id index 0
+variable        T index 1.0
+variable        N_atoms index 100
+variable        N_molecules index 100
+
+log		${dir_name}/log.lammps
+variable        T index 1
+#variable        T_e equal 0.50
+
+units           lj          # use lennard-jones (i.e. dimensionless) units
+atom_style      bond       # atoms with bonds and angles
+dimension       3
+boundary        p p p       # all boundaries are periodic
+
+#read_data       ../T1p0/runs/run${a}/end.data
+read_data       ${dir_name}/end.data
+
+mass            *  1.0
+
+#angle_style     cosine
+#angle_coeff     1  0.0
+
+bond_style      fene
+special_bonds   fene
+bond_coeff      1    30.0   1.5   1.0   1.0
+
+pair_style      lj/cut 2.5
+pair_modify     shift yes
+pair_coeff      * * 1.0 1.0 2.5
+
+neighbor        0.4 bin
+neigh_modify    every 1 delay 1 check yes
+
+thermo          50000
+thermo_style    custom  step  temp etotal pe ke press density
+
+timestep        0.005
+
+# Equilibration
+fix             NPT1 all npt temp 1.0 1.0 1.0 iso 0.0 0.0 1
+run             100000
+unfix           NPT1
+
+#Cooling (C_rate=(T_s-T_e)/(step*dt))=10^8 K/s
+fix             NPT2 all npt temp 1.0 ${T} 1.0 iso 0.0 0.0 1
+run             100000
+unfix           NPT2
+
+# final temperature
+fix             NPT3 all npt temp ${T} ${T} 1.0 iso  0.0 0.0 1
+run             200000
+unfix           NPT3
+
+write_data      ${dir_name}/end_cool.data   nocoeff
+#write_data      ${dir_name}/end_cool.data   nocoeff
+
+#next            a
+#jump            in.KG_cool   
+

@@ -17,6 +17,7 @@ atoms_file = os.path.join(dir_name, 'atoms.csv')
 output_file = os.path.join(dir_name, 'molecules_bonds.data')
 
 molecules_path = os.path.join(script_dir, 'scripts/in.molecules_N')
+cool_path = os.path.join(script_dir, 'scripts/in.KG_cool')
 hessian_path = os.path.join(script_dir, 'scripts/in.KG_cool_Hessian')
 aff_path = os.path.join(script_dir, 'scripts/in.KG_cool_affine')
 
@@ -39,6 +40,10 @@ def main():
     print("Balancing the system...")
     run_script(lmp, molecules_path)
     print("Files created : trajectory.lammpstrj, end.data")
+
+    print("Cooling the system...")
+    run_script(lmp, cool_path)
+    print("Files created : end_cool.data")
 
     print("Calculations the Hessian...")
     run_script(lmp, hessian_path)

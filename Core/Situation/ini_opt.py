@@ -8,7 +8,11 @@ N_molecules = config.N_molecules
 T = config.T
 id = config.id
 
-L = np.array([30, 30, 30])  # Dimensions of the cube            # Atoms per molecule
+rho = 0.001
+V = N_atoms/rho
+length = V**(1/3)
+
+L = np.array([length, length, length])  # Dimensions of the cube            # Atoms per molecule
 step = 1.0                  # Length of the walk
 D_MIN = 0.9                 # Minimum distance between two atoms
 max_tries_per_step = 50     # Max tries per step before restarting
