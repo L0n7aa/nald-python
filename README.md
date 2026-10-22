@@ -56,7 +56,7 @@ python3 nald.py -M <molecules> -N <atoms> -T <temperature>
 | Argument | Short | Description | Example |
 | :--- | :--- | :--- | :--- |
 | `--molecules` | `-M` | Number of molecules in the system | `50` |
-| `--atoms` | `-N` / `-A` | Number of atoms per molecule | `50` |
+| `--atoms` | `-A` | Number of atoms per molecule | `50` |
 | `--temperature` | `-T` | System simulation temperature | `0.5` |
 
 ### Example
