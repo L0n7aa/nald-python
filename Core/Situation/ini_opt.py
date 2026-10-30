@@ -8,8 +8,8 @@ N_molecules = config.N_molecules
 T = config.T
 id = config.id
 
-rho = 0.001
-V = N_atoms/rho
+rho = 0.1
+V = N_atoms*N_molecules/rho
 length = V**(1/3)
 
 L = np.array([length, length, length])  # Dimensions of the cube            # Atoms per molecule

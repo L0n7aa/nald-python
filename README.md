@@ -39,6 +39,25 @@ Ensure you have Python 3.8+ installed along with the required libraries.
 
 > **Note on LAMMPS:** Ensure the C++ LAMMPS shared library (`liblammps.so` or `liblammps.dylib`) is compiled and accessible in your environment path or installed via Conda (`conda install -c conda-forge lammps`).
 
+### **LAMMPS Installation**
+
+Quick instructions to install lammps on your virtual environment:
+
+   ```bash
+   git clone -b stable https://github.com/lammps/lammps.git
+   cd lammps
+   mkdir build && cd build
+
+   cmake -C ../cmake/presets/most.cmake ../cmake \
+   -D BUILD_SHARED_LIBS=yes \
+   -D LAMMPS_EXCEPTIONS=yes \
+   -D CMAKE_INSTALL_PREFIX=$VIRTUAL_ENV
+
+   cmake --build . -j 4
+   cmake --install .
+   cmake --build . --target install-python
+   ```
+
 ---
 
 ## Usage

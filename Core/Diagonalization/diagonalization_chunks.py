@@ -67,7 +67,7 @@ if __name__ == "__main__":
     N = 10000
     dim = 3 * N
     T = 1
-    CHUNK = 3000 # 3 hours of Calculations     
+    CHUNK = 3000 # 3 hours of computing     
     SAVE_VECTORS = False  
 
     # Directories and filepaths

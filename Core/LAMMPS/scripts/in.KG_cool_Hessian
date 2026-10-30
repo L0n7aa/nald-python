@@ -17,7 +17,7 @@ atom_style      bond       # atoms with bonds and angles
 dimension       3
 boundary        p p p       # all boundaries are periodic
 
-read_data       ${dir_name}/end.data    # use the cooled configuration 
+read_data       ${dir_name}/end_cool.data    # use the cooled configuration 
 
 mass            *  1.0
 set atom 	* type 1
