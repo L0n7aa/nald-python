@@ -6,7 +6,7 @@ from Structure.show_data import load_data, save_data, visualization
 
 npy_data_path, atom_path, image_path, config.id = paths()
 
-def situation(show=True):
+def structure(show=True):
     print("Generating optimized system...")
     molecules = generate_system_optimized()
     if len(molecules) > 0:

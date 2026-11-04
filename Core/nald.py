@@ -62,14 +62,14 @@ def main():
         import matplotlib
         matplotlib.use("Agg")
 
-    from Structure.situation import situation
+    from NALD.Core.Structure.structure import structure
     from LAMMPS.lammps_scripts import main as lmp_scripts
     from Diagonalization.scripts_diag import main as diag
     from Modulus.modulus import compute as mod
     from Plot.plot import plot_moduli
 
     while True:
-        situation(show=not args.yes)
+        structure(show=not args.yes)
         if args.yes or not ask("Do you want to regenerate the system?"):
             break
         print("Regenerating...")
