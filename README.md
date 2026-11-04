@@ -123,7 +123,7 @@ python3 nald.py -M <molecules> -N <atoms> -T <temperature> -n <MPI processes> -r
 | `--np` | `-n` | MPI processes per simulation | `4` |
 | `--runs` | `-r` | Number of simulations | `2` |
 | `--jobs` | `-j` | Number of simulations running at the same time | `2` |
-| `--lammps | / | **OPTIONNAL** : Path to the LAMMPS executable` | `path/to/LAMMPS` |
+| `--lammps` | / | **OPTIONNAL** : Path to the LAMMPS executable` | `path/to/LAMMPS` |
 | `--yes` | / | **OPTIONNAL** : Non intervative mode` | / | 
 
 ### Example
@@ -170,3 +170,7 @@ python3 nald.py -M 50 -A 50 -T 0.5 -n 2 -r 4 -j 2 --yes
 ## Data Storage
 
 Each simulation result can be found in the `Data/run_{id}_{temperature}_{number of atoms}_{number of molecules}` directory.
+
+## Logs Storage
+
+LAMMPS logs can be found in the `Core/Logs/run{id}` directory.
