@@ -3,3 +3,9 @@ Core/LAMMPS/scripts/lammps-30Sep2026/*
 Core/LAMMPS/scripts/lammps.tar.gz
 logs.lammps
 Core/Diagonalization/diagonalization_chunks.py
+Core/__pycache__/*
+Diagonalization/__pycache__/*
+LAMMPS/__pycache__/*
+Modulus/__pycache__/*
+Plot/__pycache__/*
+Logs/*
