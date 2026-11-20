@@ -1,0 +1,244 @@
+LAMMPS (4 Jul 2026)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread.
+  using 1 OpenMP thread(s) per MPI task
+###############################################
+
+###############################################
+#Difine Variables
+variable a index 0
+clear
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread.
+  using 1 OpenMP thread(s) per MPI task
+variable T_s equal 1.0
+variable T_e equal 1.0
+variable real_t equal (step0.005)
+variable V equal vol
+units lj # use lennard-jones (i.e. dimensionless) units
+atom_style angle # atoms with bonds and angles
+dimension 3
+boundary p p p # all boundaries are periodic
+#read_data ../data/end_cool_T${T_e}.data # use the cooled configuration
+read_data ../output/end_Hessian_T${T_e}.data
+read_data ../output/end_Hessian_T1.data
+Reading data file ...
+  orthogonal box = (2.3874388 2.3874388 2.3874388) to (24.756737 24.756737 24.756737)
+  1 by 1 by 2 MPI processor grid
+  reading atoms ...
+  10000 atoms
+  reading velocities ...
+  10000 velocities
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  orthogonal box = (2.3874388 2.3874388 2.3874388) to (24.756737 24.756737 24.756737)
+  1 by 1 by 2 MPI processor grid
+  reading bonds ...
+  9900 bonds
+  reading angles ...
+  9800 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.049 seconds
+
+mass * 1.0
+set atom * type 1
+Setting atom values ...
+  10000 settings made for type
+
+angle_style cosine
+angle_coeff 1 0.0
+bond_style fene
+special_bonds fene
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        1        1       
+  special bond factors coul:  0        1        1       
+     2 = max # of 1-2 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+bond_coeff 1 30.0 1.5 1.0 1.0
+pair_style lj/cut 2.5
+pair_modify shift yes
+pair_coeff * * 1.0 1.0 2.5
+neighbor 0.5 bin
+neigh_modify every 10 delay 0 check no
+thermo 5000
+thermo_style custom step temp etotal pe ke press density
+timestep 0.005
+
+variable delta equal 1e-6
+
+
+print "${V}" file ../data/volume.dat screen no
+run 0
+WARNING: No fixes with time integration, atoms won't move
+For more information see https://docs.lammps.org/err0028 (src/verlet.cpp:60)
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 10 steps, delay = 0 steps, check = no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3
+  ghost atom cutoff = 3
+  binsize = 1.5, bins = 15 15 15
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 6.183 | 6.183 | 6.183 Mbytes
+   Step          Temp          TotEng         PotEng         KinEng         Press         Density    
+         0   0.99000182     17.587283      16.102429      1.4848542     -0.030720148    0.89339376   
+Loop time of 1.2415e-06 on 2 procs for 0 steps with 10000 atoms
+
+80.5% CPU use with 2 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Bond    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 1.241e-06  |            |       |100.00
+
+Nlocal:           5000 ave        5001 max        4999 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Nghost:           7327 ave        7350 max        7304 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Neighs:         245838 ave      245880 max      245796 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+
+Total # of neighbors = 491676
+Ave neighs/atom = 49.1676
+Ave special neighs/atom = 1.98
+Neighbor list builds = 0
+Dangerous builds not checked
+change_box all triclinic
+Changing box ...
+  triclinic box = (2.3874388 2.3874388 2.3874388) to (24.756737 24.756737 24.756737) with tilt (0 0 0)
+#kspace_style pppm 1e-5
+####################################################################
+
+
+change_box all xz delta 0.0 remap units box
+Changing box ...
+  triclinic box = (2.3874388 2.3874388 2.3874388) to (24.756737 24.756737 24.756737) with tilt (0 0 0)
+run 0
+WARNING: No fixes with time integration, atoms won't move
+For more information see https://docs.lammps.org/err0028 (src/verlet.cpp:60)
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 10 steps, delay = 0 steps, check = no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3
+  ghost atom cutoff = 3
+  binsize = 1.5, bins = 15 15 15
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton/tri
+      stencil: half/bin/3d/tri
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 6.183 | 6.183 | 6.183 Mbytes
+   Step          Temp          TotEng         PotEng         KinEng         Press         Density    
+         0   0.99000182     17.587283      16.102429      1.4848542     -0.030720148    0.89339376   
+Loop time of 8.415e-07 on 2 procs for 0 steps with 10000 atoms
+
+118.8% CPU use with 2 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Bond    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 8.415e-07  |            |       |100.00
+
+Nlocal:           5000 ave        5001 max        4999 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Nghost:           7327 ave        7350 max        7304 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Neighs:         245838 ave      246038 max      245638 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+
+Total # of neighbors = 491676
+Ave neighs/atom = 49.1676
+Ave special neighs/atom = 1.98
+Neighbor list builds = 0
+Dangerous builds not checked
+fix prevState all store/state 0 fx fy fz
+
+
+variable ddXZ equal ${delta}*lz
+variable ddXZ equal 1e-06*lz
+change_box all xz delta ${ddXZ} remap units box
+change_box all xz delta 2.23692983555509e-05 remap units box
+Changing box ...
+  triclinic box = (2.3874388 2.3874388 2.3874388) to (24.756737 24.756737 24.756737) with tilt (0 2.2369298e-05 0)
+run 0
+WARNING: No fixes with time integration, atoms won't move
+For more information see https://docs.lammps.org/err0028 (src/verlet.cpp:60)
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 6.558 | 6.558 | 6.558 Mbytes
+   Step          Temp          TotEng         PotEng         KinEng         Press         Density    
+         0   0.99000182     17.587283      16.102429      1.4848542     -0.030719587    0.89339376   
+Loop time of 1.203e-06 on 2 procs for 0 steps with 10000 atoms
+
+207.8% CPU use with 2 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Bond    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 1.203e-06  |            |       |100.00
+
+Nlocal:           5000 ave        5001 max        4999 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Nghost:           7327 ave        7350 max        7304 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+Neighs:         245838 ave      246038 max      245638 min
+Histogram: 1 0 0 0 0 0 0 0 0 1
+
+Total # of neighbors = 491676
+Ave neighs/atom = 49.1676
+Ave special neighs/atom = 1.98
+Neighbor list builds = 0
+Dangerous builds not checked
+fix currState all store/state 0 fx fy fz
+
+
+variable affineForceX atom (f_prevState[1]-f_currState[1])/${delta}
+variable affineForceX atom (f_prevState[1]-f_currState[1])/1e-06
+variable affineForceY atom (f_prevState[2]-f_currState[2])/${delta}
+variable affineForceY atom (f_prevState[2]-f_currState[2])/1e-06
+variable affineForceZ atom (f_prevState[3]-f_currState[3])/${delta}
+variable affineForceZ atom (f_prevState[3]-f_currState[3])/1e-06
+write_dump all custom ../output/AF_T${T_e}.dat mass v_affineForceX v_affineForceY v_affineForceZ modify sort id format line "%.15g %.15g %.15g %.15g"
+write_dump all custom ../output/AF_T1.dat mass v_affineForceX v_affineForceY v_affineForceZ modify sort id format line "%.15g %.15g %.15g %.15g"
+unfix currState
+unfix prevState
+
+write_data ../output/end_affine_T${T_e}.data nocoeff
+write_data ../output/end_affine_T1.data nocoeff
+System init for write_data ...
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+next a
+jump in.KG_cool_affine
+Total wall time: 0:00:00
