@@ -21,19 +21,22 @@ def ask(question):
         print("Incorrect response.")
 
 
-def git_commit():
+def git_state():
+    here = os.path.dirname(os.path.abspath(__file__))
     try:
-        here = os.path.dirname(os.path.abspath(__file__))
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=here,
-                                       stderr=subprocess.DEVNULL, text=True).strip()
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=here,
+                                         stderr=subprocess.DEVNULL, text=True).strip()
+        dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=here,
+                                             stderr=subprocess.DEVNULL, text=True).strip())
+        return commit, dirty
     except Exception:
-        return None
+        return None, None
 
 
 def save_provenance(paths, raw, cfg, index):
     info = {
         "date": datetime.now().isoformat(timespec="seconds"),
-        "git_commit": git_commit(),
+        "git_commit": git_state(),
         "python": sys.version.split()[0],
         "run_index": index,
         "seed_used": cfg.seed,
