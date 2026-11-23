@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nald-python"
+version = "0.1.0"
+description = "Non-Affine Lattice Dynamics (NALD) package"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "pydantic>=2.5",
+]
+
+[project.optional-dependencies]
+mpi = ["mpi4py>=3.1"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nald*"]
+
+[tool.setuptools.package-data]
+"nald.lammps" = ["scripts/*"]
+
+[project.scripts]
+nald = "nald.cli:main"

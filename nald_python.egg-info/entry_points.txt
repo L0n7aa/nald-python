@@ -1,0 +1,2 @@
+[console_scripts]
+nald = nald.cli:main
