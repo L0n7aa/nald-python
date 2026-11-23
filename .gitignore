@@ -13,3 +13,4 @@ nald/log.lammps
 tests/reference/run_1_1_50_50
 tests/reference/run_4_0.5_20_10
 tests/reference/run_5_1_50_50
+nald_python.egg-info/*
