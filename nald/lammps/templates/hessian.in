@@ -1,0 +1,9 @@
+# NALD: Hessian (dynamical matrix, mass-weighted by LAMMPS)
+include         @@SYSTEM@@
+thermo_style    custom step temp press etotal pe ke vol
+thermo          1
+run             0
+variable        volume equal vol
+print           "${volume}" file @@RAW@@/volume.dat screen no
+dynamical_matrix all @@STYLE@@ @@DISPLACEMENT@@ file @@RAW@@/hessian.dat@@BINARY@@
+run             0

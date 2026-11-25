@@ -1,0 +1,41 @@
+# channel @@CH@@ (axis scaling) 
+# states : -h/2, +h/2, back to initial state
+variable        f1 equal 1-0.5*${h}
+variable        f2 equal (1+0.5*${h})/(1-0.5*${h})
+variable        f3 equal 1/(1+0.5*${h})
+# -h/2 state
+change_box      all @@AXIS@@ scale ${f1} remap
+run             0
+fix             Fm all store/state 0 fx fy fz
+# store values
+variable        m1 equal ${s1}
+variable        m2 equal ${s2}
+variable        m3 equal ${s3}
+variable        m4 equal ${s4}
+variable        m5 equal ${s5}
+variable        m6 equal ${s6}
+# +h/2 state
+change_box      all @@AXIS@@ scale ${f2} remap
+run             0
+fix             Fp all store/state 0 fx fy fz
+variable        p1 equal ${s1}
+variable        p2 equal ${s2}
+variable        p3 equal ${s3}
+variable        p4 equal ${s4}
+variable        p5 equal ${s5}
+variable        p6 equal ${s6}
+variable        xi_x atom (f_Fm[1]-f_Fp[1])/${h}
+variable        xi_y atom (f_Fm[2]-f_Fp[2])/${h}
+variable        xi_z atom (f_Fm[3]-f_Fp[3])/${h}
+write_dump      all custom @@RAW@@/Xi_@@CH@@.dat mass v_xi_x v_xi_y v_xi_z modify sort id format line "%.15g %.15g %.15g %.15g"
+unfix           Fm
+unfix           Fp
+variable        g1 equal (${p1}-${m1})/${h}
+variable        g2 equal (${p2}-${m2})/${h}
+variable        g3 equal (${p3}-${m3})/${h}
+variable        g4 equal (${p4}-${m4})/${h}
+variable        g5 equal (${p5}-${m5})/${h}
+variable        g6 equal (${p6}-${m6})/${h}
+print           "@@CH@@ ${g1} ${g2} ${g3} ${g4} ${g5} ${g6}" @@FILEMODE@@ @@RAW@@/stress_response.dat screen no
+change_box      all @@AXIS@@ scale ${f3} remap
+run             0

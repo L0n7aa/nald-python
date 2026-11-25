@@ -1,4 +1,4 @@
-"""python -m nald.cli run config.yaml     (ou: nald run config.yaml après pip install -e .)"""
+"""python -m nald.cli run config.yaml     (or: nald run config.yaml after pip install -e .)"""
 import argparse
 import dataclasses
 import os

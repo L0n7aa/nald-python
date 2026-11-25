@@ -1,0 +1,19 @@
+# NALD: affine forces and affine stress response, ONE pass over all requested channels
+#   Xi         = ( F(-h/2) - F(+h/2) ) / h       -> Xi_<channel>.dat       (mass, Xi_x, Xi_y, Xi_z)
+#   dSigma/dg  = ( S(+h/2) - S(-h/2) ) / h       -> stress_response.dat    (channel, 6 derivatives)
+# sigma = -P (pressure unit of the chosen 'units'); components ordered xx yy zz xy xz yz
+include         @@SYSTEM@@
+variable        h equal @@DELTA@@
+thermo          1
+run             0
+change_box      all triclinic
+@@KSPACE@@
+
+variable        s1 equal -pxx
+variable        s2 equal -pyy
+variable        s3 equal -pzz
+variable        s4 equal -pxy
+variable        s5 equal -pxz
+variable        s6 equal -pyz
+
+@@CHANNELS@@

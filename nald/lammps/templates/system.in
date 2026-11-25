@@ -1,0 +1,10 @@
+# System block: everything that depends on the model / force field
+units           @@UNITS@@
+dimension       3
+boundary        p p p
+atom_style      @@ATOM_STYLE@@
+
+@@FORCEFIELD@@
+
+read_data       @@DATA_FILE@@
+@@COEFFICIENTS@@
