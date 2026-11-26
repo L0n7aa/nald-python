@@ -1,7 +1,7 @@
 import numpy as np
 
-from nald.structure.ini import SystemGenerator
-from nald.structure.show_data import load_data, save_data, visualization
+from nald.model.ini import SystemGenerator
+from nald.model.show_data import load_data, save_data, visualization
 
 
 def structure(cfg, paths, show=True, attempt=0):

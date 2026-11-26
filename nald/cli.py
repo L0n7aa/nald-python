@@ -10,7 +10,7 @@ from datetime import datetime
 import yaml
 
 from nald.config import load_config
-from nald.structure.paths import create_run_dir
+from nald.model.paths import create_run_dir
 
 
 def ask(question):
@@ -52,9 +52,9 @@ def run_single(cfg, raw, index=0):
 
     if not cfg.interactive:
         import matplotlib
-        matplotlib.use("Agg")      # doit être choisi AVANT le premier import de pyplot
+        matplotlib.use("Agg")      
 
-    from nald.structure.structure import structure
+    from nald.model.structure import structure
     from nald.lammps.lammps_scripts import main as lmp_scripts
     from nald.diagonalization.scripts_diag import main as diag
     from nald.modulus.modulus import compute as mod
@@ -98,7 +98,7 @@ def run_batch(cfg, config_path):
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="nald")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    r = sub.add_parser("run", help="lancer un calcul à partir d'un fichier YAML")
+    r = sub.add_parser("run", help="launch calculation from yaml file")
     r.add_argument("config")
     r.add_argument("--index", type=int, default=None, help=argparse.SUPPRESS)
     args = ap.parse_args(argv)
