@@ -12,7 +12,7 @@ def find_lammps(explicit=None):
             p = shutil.which(c)
             if p:
                 return p
-            raise FileNotFoundError(f"LAMMPS introuvable : {c}")
+            raise FileNotFoundError(f"LAMMPS not found : {c}")
     for name in CANDIDATES:
         p = shutil.which(name)
         if p:
@@ -20,7 +20,7 @@ def find_lammps(explicit=None):
     raise FileNotFoundError(
         "LAMMPS not found. Install LAMMPS with:\n"
         "  conda install -c conda-forge lammps\n"
-        "or write directly its path with --lammps /chemin/lmp (or LAMMPS_EXE)."
+        "or write directly its path with --lammps /path/lmp (or LAMMPS_EXE)."
     )
 
 def _lib_dirs(exe):

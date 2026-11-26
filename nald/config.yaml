@@ -8,8 +8,7 @@ run:
 
 model:
   type: atomistic # kremer_grest or atomistic
-  equilibrated: false # false if using kremer_grest for now
-  generate: false
+  generate: false # true if using kremer_grest for now
   n_molecules: 50
   n_atoms: 50
   temperature: 1

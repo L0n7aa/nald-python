@@ -38,7 +38,6 @@ class Config:
     max_jobs: int
     # model
     model_type: str
-    equilibrated: bool
     generate: bool
     temperature: str
     n_molecules: int
@@ -86,7 +85,7 @@ def _leaves(d, prefix=""):
 
 
 def load_config(path):
-    """Return (Config, dict brut du YAML)."""
+    """Return (Config, raw dict from yaml file)."""
     path = os.path.abspath(path)
     base = os.path.dirname(path)
     with open(path) as f:
@@ -111,8 +110,7 @@ def load_config(path):
     if mtype not in MODEL_TYPES:
         raise SystemExit(f"model.type='{mtype}' unknown (valid: {', '.join(MODEL_TYPES)})")
 
-    eq = bool(get("model.equilibrated", False))
-    generate = bool(get("model.generate", mtype == "kremer_grest" and not eq))
+    generate = bool(get("model.generate", mtype == "kremer_grest"))
     if mtype == "atomistic" and generate:
         raise SystemExit("model.type 'atomistic' required 'generate: false' "
                          "(nald does not construct atomistic systems for now).")
@@ -137,7 +135,6 @@ def load_config(path):
         n_procs=int(get("executor.n_procs", 1)),
         max_jobs=int(get("executor.max_parallel_jobs", 1)),
         model_type=mtype,
-        equilibrated=eq,
         generate=generate,
         temperature=str(get("model.temperature")),
         n_molecules=int(get("model.n_molecules", 1)),
@@ -158,18 +155,18 @@ def load_config(path):
     )
 
     if cfg.data_file and (not os.path.isfile(cfg.data_file) or " " in os.path.basename(cfg.data_file)):
-        raise SystemExit(f"data_file introuvable (ou nom avec espace): {cfg.data_file}")
+        raise SystemExit(f"data_file not found: {cfg.data_file}")
     if cfg.hessian_style not in ("regular", "eskm"):
-        raise SystemExit("nald.hessian.style doit valoir 'regular' ou 'eskm'")
+        raise SystemExit("nald.hessian.style must be 'regular' or 'eskm'")
     if not channels or any(c not in ALL_CHANNELS for c in channels):
         raise SystemExit(f"nald.affine.channels invalide (valides: {ALL_CHANNELS})")
     if min(cfg.n_runs, cfg.n_procs, cfg.max_jobs, cfg.n_molecules, cfg.n_atoms) < 1 \
             or cfg.delta <= 0 or cfg.hessian_displacement <= 0 or cfg.density <= 0:
-        raise SystemExit("config.yaml: entiers, densité, delta et displacement doivent être > 0")
+        raise SystemExit("config.yaml: integers, density, delta and displacement must be > 0")
 
     unused = [p for p in _leaves(raw) if p not in used]
     if unused:
-        print("config.yaml: clés non utilisées par cette version:", ", ".join(unused))
+        print("config.yaml: keys not used for this version:", ", ".join(unused))
     if not cfg.generate and cfg.n_runs > 1:
-        print("config.yaml: n_runs est ignoré quand generate: false (le calcul est déterministe).")
+        print("config.yaml: n_runs is ignored when generate: false.")
     return cfg, raw

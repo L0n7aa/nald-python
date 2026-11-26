@@ -1,4 +1,3 @@
-"""Construit les scripts LAMMPS à partir des scripts de base (templates/) et de la config."""
 from dataclasses import dataclass
 
 from nald.engine.render import render
