@@ -60,20 +60,20 @@ def describe(hdr):
     return "\n".join(lines)
 
 
-def check_consistency(hdr, system, channels):
+def check_consistency(hdr, cfg):
     """Compare la config au data file. Renvoie une liste d'avertissements (jamais d'exception)."""
     w = []
     declared = {}
-    for line in system.styles:
+    for line in cfg.styles:
         tok = line.split()
         if tok[0].endswith("_style") and len(tok) > 1:
             declared[tok[0]] = tok[1]
-    coeff_cmds = {l.split()[0] for l in system.coefficients}
+    coeff_cmds = {l.split()[0] for l in cfg.coefficients}
 
     atoms_comment = hdr["sections"].get("Atoms")
-    if atoms_comment and atoms_comment.split()[0] != system.atom_style:
+    if atoms_comment and atoms_comment.split()[0] != cfg.atom_style:
         w.append(f"atom_style: le data file indique '{atoms_comment.split()[0]}', "
-                 f"la config déclare '{system.atom_style}'.")
+                 f"la config déclare '{cfg.atom_style}'.")
 
     for section, key in STYLE_OF_SECTION.items():
         if section not in hdr["sections"]:
@@ -99,11 +99,11 @@ def check_consistency(hdr, system, channels):
         if "Masses" not in hdr["sections"] and "mass" not in coeff_cmds:
             w.append("ni section 'Masses' dans le data file ni 'mass' dans forcefield.coefficients.")
 
-    if "coul/long" in declared.get("pair_style", "") and "kspace_style" not in {l.split()[0] for l in system.styles}:
+    if "coul/long" in declared.get("pair_style", "") and "kspace_style" not in {l.split()[0] for l in cfg.styles}:
         w.append("pair_style coul/long sans kspace_style dans forcefield.styles.")
 
     tilt = hdr["tilt"]
-    if tilt and any(abs(x) > 0 for x in tilt) and any(c in channels for c in ("xx", "yy", "zz")):
+    if tilt and any(abs(x) > 0 for x in tilt) and any(c in cfg.channels for c in ("xx", "yy", "zz")):
         w.append("boîte initialement triclinique: les canaux xx/yy/zz ne remettent pas les tilts "
                  "à l'échelle (non géré pour l'instant).")
     return w

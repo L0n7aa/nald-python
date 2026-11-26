@@ -21,11 +21,10 @@ def _num(x):
 
 def build_scripts(cfg, raw_dir="raw", system_in="inputs/system.in"):
     """Renvoie {nom_de_fichier: texte}. Aucune écriture: l'appelant décide quoi garder."""
-    sp, nd = cfg.system, cfg.nald
-    kspace = [l for l in sp.styles if l.split()[0] in ("kspace_style", "kspace_modify")]
+    kspace = [l for l in cfg.styles if l.split()[0] in ("kspace_style", "kspace_modify")]
 
     blocks = []
-    for i, ch in enumerate(nd.channels):
+    for i, ch in enumerate(cfg.channels):
         common = dict(CH=ch, RAW=raw_dir, FILEMODE="file" if i == 0 else "append")
         if ch in SCALE_AXIS:
             blocks.append(render("channel_scale.in", AXIS=SCALE_AXIS[ch], **common))
@@ -33,13 +32,13 @@ def build_scripts(cfg, raw_dir="raw", system_in="inputs/system.in"):
             blocks.append(render("channel_tilt.in", LEN=TILT_LENGTH[ch], **common))
 
     return {
-        "system.in": render("system.in", UNITS=sp.units, ATOM_STYLE=sp.atom_style,
-                            FORCEFIELD="\n".join(sp.styles), DATA_FILE=sp.data_file,
-                            COEFFICIENTS="\n".join(sp.coefficients)),
-        "hessian.in": render("hessian.in", SYSTEM=system_in, RAW=raw_dir, STYLE=nd.hessian_style,
-                             DISPLACEMENT=_num(nd.hessian_displacement),
-                             BINARY=" binary yes" if nd.hessian_binary else ""),
-        "affine.in": render("affine.in", SYSTEM=system_in, DELTA=_num(nd.delta),
+        "system.in": render("system.in", UNITS=cfg.units, ATOM_STYLE=cfg.atom_style,
+                            FORCEFIELD="\n".join(cfg.styles), DATA_FILE=cfg.data_file,
+                            COEFFICIENTS="\n".join(cfg.coefficients)),
+        "hessian.in": render("hessian.in", SYSTEM=system_in, RAW=raw_dir, STYLE=cfg.hessian_style,
+                             DISPLACEMENT=_num(cfg.hessian_displacement),
+                             BINARY=" binary yes" if cfg.hessian_binary else ""),
+        "affine.in": render("affine.in", SYSTEM=system_in, DELTA=_num(cfg.delta),
                             KSPACE="\n".join(kspace), CHANNELS="\n".join(blocks)),
     }
 

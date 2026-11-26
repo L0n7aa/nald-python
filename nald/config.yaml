@@ -7,20 +7,19 @@ run:
   # output_dir: Data     
 
 model:
-  type: kremer_grest # kremer_grest or atomistic
+  type: atomistic # kremer_grest or atomistic
   equilibrated: false # false if using kremer_grest for now
-  kremer_grest:
-    n_molecules: 50
-    n_atoms: 50
-    temperature: 1
-    density: 0.1    
-  atomistic:
-    data_file: data.rst.300
-    units: real
-    atom_style: full
-    forcefield:
-      styles: []
-      coefficients: []     
+  generate: false
+  n_molecules: 50
+  n_atoms: 50
+  temperature: 1
+  density: 0.1    
+  data_file: data.rst.300
+  units: real
+  atom_style: full
+  forcefield:
+    styles: []
+    coefficients: []     
 
 lammps:
   executable: null
