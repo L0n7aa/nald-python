@@ -1,126 +1,21 @@
 """python -m nald.cli run config.yaml     (or: nald run config.yaml after pip install -e .)
-
-  nald run     config.yaml   -> calcul complet
-  nald prepare config.yaml   -> (model.generate: true) écrit les scripts LAMMPS sans les lancer
-
-Deux chemins, un seul fichier:
-  1. système généré (KG, generate: false) : run_single / run_batch
-  2. système fourni (generate: true)      : prepare / run_generate
-Ils partagent git_state, lammps_version et save_provenance.
 """
+
 import argparse
 import dataclasses
-import hashlib
 import os
 import re
-import shutil
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+import matplotlib
+matplotlib.use("Agg")
 
-import yaml
 
 from nald.config import load_config
-from nald.engine.datafile import check_consistency, describe, read_header
-from nald.engine.scripts import build_scripts, commands_sh, make_jobs
+from NALD.nald.engine.datafile import read_header
 from nald.model.paths import create_run_dir
 
-
-def ask(question):
-    while True:
-        r = input(question + " [y/n] :").strip().lower()
-        if r in ("y", "n"):
-            return r == "y"
-        print("Incorrect response.")
-
-
-def sha256_text(text):
-    return hashlib.sha256(text.encode()).hexdigest()
-
-
-def sha256_file(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def git_state():
-    """(commit, dirty); dirty=True si des modifications ne sont pas commitées."""
-    here = os.path.dirname(os.path.abspath(__file__))
-    try:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=here,
-                                         stderr=subprocess.DEVNULL, text=True).strip()
-        dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=here,
-                                             stderr=subprocess.DEVNULL, text=True).strip())
-        return commit, dirty
-    except Exception:
-        return None, None
-
-
-def lammps_version(exe):
-    try:
-        from nald.lammps.lammps_runner import find_lammps
-        out = subprocess.run([find_lammps(exe), "-h"], capture_output=True, text=True, timeout=30).stdout
-        m = re.search(r"Large-scale Atomic/Molecular Massively Parallel Simulator\s*-\s*(.+)", out)
-        return m.group(1).strip() if m else None
-    except Exception:
-        return None
-
-
-def save_provenance(run_dir, cfg, raw, **extra):
-    """config.resolved.yaml: de quoi comprendre et refaire le calcul. `extra` = champs propres au chemin."""
-    commit, dirty = git_state()
-    info = {
-        "date": datetime.now().isoformat(timespec="seconds"),
-        "git_commit": commit, "git_dirty": dirty,
-        "python": sys.version.split()[0],
-        "lammps_version": lammps_version(cfg.lammps_exe),
-        "model": cfg.model_type, "generate": cfg.generate,
-        "seed_used": cfg.seed,
-        **extra,
-        "config": raw,
-    }
-    with open(os.path.join(run_dir, "config.resolved.yaml"), "w") as f:
-        yaml.safe_dump(info, f, sort_keys=False)
-
-
-
-def prepare(cfg, raw, run_dir, hdr=None):
-    """Write LAMMPS scripts."""
-    if hdr is None:
-        hdr = read_header(cfg.data_file)
-    print(f"Data file: {cfg.data_file}\n{describe(hdr)}\n")
-    for msg in check_consistency(hdr, cfg):
-        print(f"WARNING: {msg}")
-
-    inputs = os.path.join(run_dir, "inputs")
-    os.makedirs(inputs)
-    os.makedirs(os.path.join(run_dir, "raw"))
-
-    scripts = build_scripts(cfg)
-    for name, text in scripts.items():
-        with open(os.path.join(inputs, name), "w") as f:
-            f.write(text)
-    jobs = make_jobs(cfg)
-    with open(os.path.join(run_dir, "commands.sh"), "w") as f:
-        f.write(commands_sh(cfg, jobs))
-
-    save_provenance(
-        run_dir, cfg, raw,
-        data_file=cfg.data_file, data_sha256=sha256_file(cfg.data_file),
-        n_atoms=hdr["counts"].get("atoms"),
-        units=cfg.units, atom_style=cfg.atom_style, temperature=cfg.temperature,
-        forcefield={"styles": list(cfg.styles), "coefficients": list(cfg.coefficients)},
-        hessian={"style": cfg.hessian_style, "displacement": cfg.hessian_displacement},
-        affine={"scheme": "centered", "delta": cfg.delta, "channels": list(cfg.channels)},
-        scripts_sha256={name: sha256_text(text) for name, text in scripts.items()},
-    )
-    print(f"\nScripts written in {inputs}")
-    print(f"To run them by hand:  sh {os.path.join(run_dir, 'commands.sh')}")
-    return jobs
 
 def run_single(cfg, raw, index=0):
     if cfg.seed is not None:
@@ -128,40 +23,18 @@ def run_single(cfg, raw, index=0):
 
     hdr = read_header(cfg.data_file) if not cfg.generate else None
     paths = create_run_dir(cfg, n_atoms=hdr["counts"].get("atoms") if hdr else None)
-
-    if not cfg.interactive:
-        import matplotlib
-        matplotlib.use("Agg")      
+              
 
     from nald.model.structure import structure
-    from nald.lammps.lammps_scripts import main as lmp_scripts
+    from NALD.nald.engine.lammps_scripts import main as lmp_scripts, save_provenance
     from nald.diagonalization.scripts_diag import main as diag
     from nald.modulus.modulus import compute as mod
 
     attempt = 0
     if cfg.generate:
-        while True:
-            structure(cfg, paths, show=cfg.interactive, attempt=attempt)
-            if not cfg.interactive or not ask("Do you want to regenerate the system?"):
-                break
-            print("Regenerating...")
-            attempt += 1
+        structure(cfg, paths, show=cfg.interactive, attempt=attempt)
 
     save_provenance(paths.run_dir, cfg, raw, run_index=index)
-
-    jobs = prepare(cfg, raw, paths.run_dir, hdr=hdr)
-    from nald.lammps.lammps_runner import run_lammps
-    for job in jobs:
-        print(f"[{job.name}] running...", flush=True)
-        try:
-            run_lammps(job.script, {}, cfg.n_procs, 1, cfg.lammps_exe, cwd=paths.run_dir, log=job.log)
-        except Exception:
-            print(f"Échec de '{job.name}': scripts conservés dans {os.path.join(paths.run_dir, 'inputs')}")
-            raise
-    if not cfg.keep_scripts:
-        shutil.rmtree(os.path.join(paths.run_dir, "inputs"))
-        os.remove(os.path.join(paths.run_dir, "commands.sh"))
-    print(f"Done. LAMMPS outputs in {os.path.join(paths.run_dir, 'raw')}")
 
     lmp_scripts(cfg, paths)
     diag(cfg, paths)

@@ -18,7 +18,7 @@ def save_data(molecules, n_molecules, n_atoms, atom_path):
 
 
 # Visualization 
-def visualization(molecules, n_molecules, image_path, show=True):
+def visualization(molecules, n_molecules, image_path):
     colors = plt.cm.hsv(np.linspace(0, 1, n_molecules, endpoint=False))
     mini = molecules.reshape(-1, 3).min(axis=0)
     maxi = molecules.reshape(-1, 3).max(axis=0)
@@ -37,6 +37,4 @@ def visualization(molecules, n_molecules, image_path, show=True):
     plt.tight_layout()
     plt.savefig(image_path, dpi=150)
     print("Written image : visualization.png")
-    if show:
-        plt.show()
     plt.close(fig)

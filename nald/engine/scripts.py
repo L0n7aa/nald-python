@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from nald.engine.render import render
+from NALD.nald.engine.render import render
 
 SCALE_AXIS = {"xx": "x", "yy": "y", "zz": "z"}
 TILT_LENGTH = {"xy": "ly", "xz": "lz", "yz": "lz"}      # déformation = tilt / longueur normale

@@ -3,7 +3,6 @@ run:
   name: kg_reference
   seed: 12345            
   n_runs: 1
-  interactive: false
   # output_dir: Data     
 
 model:

@@ -1,13 +1,13 @@
 Data/*
-nald/lammps/scripts/lammps-30Sep2026/*
-nald/lammps/scripts/lammps.tar.gz
+nald/engine/scripts/lammps-30Sep2026/*
+nald/engine/scripts/lammps.tar.gz
 logs.lammps
 nald/__pycache__/*
 diagonalization/__pycache__/*
-nald/lammps/__pycache__/*
+nald/engine/__pycache__/*
 nald/modulus/__pycache__/*
 nald/plot/__pycache__/*
-nald/structure/__pycache__/*
+nald/model/__pycache__/*
 nald/Data/*
 nald/log.lammps
 tests/reference/run_1_1_50_50
