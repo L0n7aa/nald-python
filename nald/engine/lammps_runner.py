@@ -23,6 +23,7 @@ def find_lammps(explicit=None):
         "or write directly its path with --lammps /path/lmp (or LAMMPS_EXE)."
     )
 
+# TODO use Path object
 def _lib_dirs(exe):
     prefix = os.path.dirname(os.path.dirname(os.path.realpath(exe)))
     candidates = [os.environ.get("LAMMPS_LIB_DIR"),
@@ -31,7 +32,7 @@ def _lib_dirs(exe):
     return [d for d in candidates
             if d and glob.glob(os.path.join(d, "liblammps.so*"))]
 
-
+# TODO write this function with Config object
 def run_lammps(script, variables, n_procs=1, threads=1, exe=None, cwd=None, log=None):
     exe = find_lammps(exe)
     cmd = []

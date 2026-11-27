@@ -11,6 +11,7 @@ from NALD.nald.engine.datafile import check_consistency, describe, read_header
 from NALD.nald.engine.scripts import build_scripts, commands_sh, make_jobs
 from ..utils import git_state, sha256_file, sha256_text
 
+
 STEPS = [
     ("Balancing the system", "scripts/in.molecules_N"),
     ("Cooling the system", "scripts/in.KG_cool"),
@@ -77,17 +78,17 @@ def prepare(cfg, raw, run_dir, hdr=None):
     print(f"To run them by hand:  sh {os.path.join(run_dir, 'commands.sh')}")
     return jobs
 
-
+# TODO use Path and Config object
 def main(cfg, raw, paths, hdr, threads=1):
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     variables = dict(T=cfg.temperature, id=paths.run_id, N_atoms=cfg.n_atoms,
                      N_molecules=cfg.n_molecules, dir_name=paths.run_dir)
-    for label, rel in STEPS:
-        print(f"[run {paths.run_id}] {label}...", flush=True)
-        run_lammps(os.path.join(script_dir, rel), variables, cfg.n_procs, threads, cfg.lammps_exe,
-                   cwd=paths.run_dir,
-                   log=os.path.join(paths.run_dir, f"log.{os.path.basename(rel)}.lammps"))
+    # for label, rel in STEPS:
+    #     print(f"[run {paths.run_id}] {label}...", flush=True)
+    #     run_lammps(os.path.join(script_dir, rel), variables, cfg.n_procs, threads, cfg.lammps_exe,
+    #                cwd=paths.run_dir,
+    #                log=os.path.join(paths.run_dir, f"log.{os.path.basename(rel)}.lammps"))
     jobs = prepare(cfg, raw, paths.run_dir, hdr=hdr)
     for job in jobs:
         print(f"[{job.name}] running...", flush=True)

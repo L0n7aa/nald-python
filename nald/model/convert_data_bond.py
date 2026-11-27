@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# TODO : use path object
 def load_atoms(path):
     print("Loading data...")
     atoms_data = np.loadtxt(path, delimiter=",", skiprows=1)
@@ -43,7 +43,7 @@ def check_counts(atom_lines, bond_lines, N_total_atoms, expected_bonds):
     if expected_bonds is not None and len(bond_lines) != expected_bonds:
         raise RuntimeError(f"Expected {expected_bonds} bonds, found {len(bond_lines)}")
 
-
+# TODO : use Path object
 def write_data_file(path, atom_lines, bond_lines, mins, maxs, mass_type, mass_value):
     print(f"Writing {path}...")
     with open(path, "w") as f:
@@ -64,6 +64,7 @@ def write_data_file(path, atom_lines, bond_lines, mins, maxs, mass_type, mass_va
 
 
 # Main function
+# TODO use Path and Config object
 def convert(atoms_file, output_file, N_atoms, N_molecules):
     mass_type = 1
     mass_value = 1.0

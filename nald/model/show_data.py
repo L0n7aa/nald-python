@@ -1,11 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+# TODO use path 
 def load_data(path):
     molecules = np.load(path)          
     n_molecules, n_atoms, _ = molecules.shape
     return molecules, n_molecules, n_atoms
 
+
+# TODO use cfg 
 def save_data(molecules, n_molecules, n_atoms, atom_path):
     #  CSV export  
     ids_molecule = np.repeat(np.arange(n_molecules), n_atoms)
@@ -18,6 +22,9 @@ def save_data(molecules, n_molecules, n_atoms, atom_path):
 
 
 # Visualization 
+# TODO : upgrade this function for creating multiple type of graphs
+#        move this function after calculations
+#        move this function in plot directory
 def visualization(molecules, n_molecules, image_path):
     colors = plt.cm.hsv(np.linspace(0, 1, n_molecules, endpoint=False))
     mini = molecules.reshape(-1, 3).min(axis=0)

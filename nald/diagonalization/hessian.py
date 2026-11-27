@@ -1,5 +1,4 @@
 import numpy as np
-import os
 
 
 def organize(dim, old_hessian, new_hessian):

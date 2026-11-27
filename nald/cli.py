@@ -4,12 +4,10 @@
 import argparse
 import dataclasses
 import os
-import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
 import matplotlib
-matplotlib.use("Agg")
 
 
 from nald.config import load_config
@@ -23,7 +21,6 @@ def run_single(cfg, raw, index=0):
 
     hdr = read_header(cfg.data_file) if not cfg.generate else None
     paths = create_run_dir(cfg, n_atoms=hdr["counts"].get("atoms") if hdr else None)
-              
 
     from nald.model.structure import structure
     from NALD.nald.engine.lammps_scripts import main as lmp_scripts, save_provenance
@@ -40,6 +37,7 @@ def run_single(cfg, raw, index=0):
     diag(cfg, paths)
     mod(paths)
     print(f"Done. Results in {paths.run_dir}")
+
 
 def run_batch(cfg, config_path):
     jobs = min(cfg.max_jobs, cfg.n_runs)
@@ -78,4 +76,5 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    matplotlib.use("Agg")
     main()

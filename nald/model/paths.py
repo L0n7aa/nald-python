@@ -35,7 +35,7 @@ class RunPaths:
 
 
 def create_run_dir(cfg):
-    """Remplace ini_opt.paths(): crée Data/run_<id>_<T>_<N_atoms>_<N_molecules>."""
+    """Replace ini_opt.paths(): create Data/run_<id>_<T>_<N_atoms>_<N_molecules>."""
     data_dir = os.path.abspath(cfg.output_dir) if cfg.output_dir else DEFAULT_DATA_DIR
     os.makedirs(data_dir, exist_ok=True)
     run_id = len(os.listdir(data_dir))

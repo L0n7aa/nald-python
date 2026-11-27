@@ -1,6 +1,7 @@
 from nald.diagonalization.hessian import organize, symetrizing
 from nald.diagonalization.diagonalization import load_hessian, diagonalizing, gamma
 
+# TODO code another type of solver for later
 
 def get_hessian(cfg, paths):
     print("Organizing and symetrizing the hessian...")
